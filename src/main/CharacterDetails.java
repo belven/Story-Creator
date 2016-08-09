@@ -20,6 +20,14 @@ public class CharacterDetails extends JPanel {
 	public void copy(CharacterDetails cd) {
 		this.firstName = cd.firstName;
 		this.secondName = cd.secondName;
+		firstNameTextField.setText(firstName);
+		firstNameTextField.setText(secondName);
+		update();
+	}
+	
+	public void update() {
+		validate();
+		repaint();
 	}
 
 	public CharacterDetails(String inFirstName, String inSecondName) {
@@ -29,11 +37,7 @@ public class CharacterDetails extends JPanel {
 
 		firstNameTextField.setText(firstName);
 		secondNameTextField.setText(secondName);
-
-		firstNameTextField.repaint();
-		secondNameTextField.repaint();
-		firstNameTextField.validate();
-		secondNameTextField.validate();
+		update();
 	}
 
 	@Override
