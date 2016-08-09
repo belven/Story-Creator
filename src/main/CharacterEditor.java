@@ -24,8 +24,6 @@ public class CharacterEditor extends javax.swing.JFrame {
 			public void itemStateChanged(ItemEvent arg0) {
 				if (arg0.getStateChange() == ItemEvent.SELECTED) {
 					selectedCharacter.copy((CharacterDetails) characters.getSelectedItem());
-					selectedCharacter.repaint();
-					selectedCharacter.validate();
 				}
 			}
 		});
