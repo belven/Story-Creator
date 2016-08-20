@@ -1,74 +1,58 @@
 package main;
 
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
-public class CharacterDetails extends JPanel {
-	private static final long serialVersionUID = 1L;
+public class CharacterDetails {
 
 	public static int labelColumn = 0;
 	public static int valueColumn = 1;
-	
+
 	public int ID = 0;
-	public String firstName = "Test";
-	public String secondName = "Name";
 
-	JTextField firstNameTextField = new JTextField(firstName);
-	JTextField secondNameTextField = new JTextField(secondName);
+	private Text firstNameTextField;
+	private Text secondNameTextField;
 
-	public CharacterDetails() {
-		GridBagConstraints constraints = new GridBagConsteraints();
-		setLayout(new GridBagLayout();
-		
-		constraints.gridx = labelColumn;
-		constraints.gridy = 0;
-		constraints.weightx = 0.5;
-		constraints.anchor = GridBagConstraints.WEST;
-		
-		add(new JLabel("First Name"), constraints);
-		
-		constraints.gridx = valueColumn;
-		add(firstNameTextField, constraints);
-		
-		constraints.gridy++;
-		constraints.gridx = labelColumn;
-		add(new JLabel("Second Name"), constraints);
-		
-		constraints.gridx = valueColumn;
-		add(secondNameTextField, constraints);
-		
-		constraints.gridx = labelColumn;
-		constraints.gridy++;
-		add(JSeperator(), constraints);
+	public CharacterDetails(Shell shell) {
+		// Shell shell = new Shell();
+		firstNameTextField = new Text(shell, 0);
+		secondNameTextField = new Text(shell, 0);
+
+		shell.pack();
+		// shell.open();
 	}
-	
+
 	public void copy(CharacterDetails cd) {
-		this.firstName = cd.firstName;
-		this.secondName = cd.secondName;
-		firstNameTextField.setText(firstName);
-		firstNameTextField.setText(secondName);
-		update();
-	}
-	
-	public void update() {
-		validate();
-		repaint();
+		this.setFirstName(cd.getFirstName());
+		this.setSecondName(cd.getSecondName());
 	}
 
-	public CharacterDetails(int inID, String inFirstName, String inSecondName) {
-		this();
-		
+	public CharacterDetails(Shell shell, int inID, String inFirstName, String inSecondName) {
+		this(shell);
+
 		ID = inID;
-		firstName = inFirstName;
-		secondName = inSecondName;
-
-		firstNameTextField.setText(firstName);
-		secondNameTextField.setText(secondName);
-		update();
+		setFirstName(inFirstName);
+		setSecondName(inSecondName);
 	}
 
 	@Override
 	public String toString() {
-		return firstName + " " + secondName;
+		return getFirstName() + " " + getSecondName();
+	}
+
+	public String getFirstName() {
+		return firstNameTextField.getText();
+	}
+
+	public void setFirstName(String firstName) {
+		firstNameTextField.setText(firstName);
+	}
+
+	public String getSecondName() {
+		return secondNameTextField.getText();
+	}
+
+	public void setSecondName(String secondName) {
+		secondNameTextField.setText(secondName);
 	}
 }

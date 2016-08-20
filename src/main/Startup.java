@@ -1,39 +1,45 @@
 package main;
 
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 public class Startup implements Runnable {
 
 	@Override
 	public void run() {
-		JFrame frame = new JFrame("test");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new FlowLayout());
-		JButton jButton = new JButton("Open Character Editor");
-		jButton.addActionListener(new ActionListener() {
+		Display display = new Display();
+		Shell shell = new Shell(display);
+		shell.setLayout(new RowLayout());
 
+		Button openCharacters = new Button(shell, SWT.PUSH);
+		openCharacters.setText("Open Character Editor");
+		openCharacters.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				new CharacterEditor();
+			public void widgetSelected(SelectionEvent e) {
+				new CharacterEditor(display, shell);
 			}
 		});
 
-		frame.add(jButton);
-		frame.pack();
-		frame.setVisible(true);
-		frame.setSize(400, 400);
+		shell.pack();
+		shell.open();
+
+		while (!shell.isDisposed()) {
+			if (!display.readAndDispatch())
+				display.sleep();
+		}
+
+		display.dispose();
 	};
 
 	public static void main(String[] args) {
 		Startup se = new Startup();
-		// Schedules the application to be run at the correct time in the event
-		// queue.
 		SwingUtilities.invokeLater(se);
 	}
 }

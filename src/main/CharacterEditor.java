@@ -1,39 +1,50 @@
 package main;
 
-import java.awt.FlowLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.util.ArrayList;
 
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
-public class CharacterEditor extends javax.swing.JFrame {
-	private static final long serialVersionUID = 1L;
-	private JComboBox<CharacterDetails> characters;
-	private CharacterDetails selectedCharacter = new CharacterDetails();
+public class CharacterEditor {
+	private ArrayList<CharacterDetails> characters = new ArrayList<>();
+	Shell characterShell;
+	Combo characterList;
 
-	public CharacterEditor() {
-		super("Characters");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLayout(new FlowLayout());
-		add(characters = createCharacterList());
-		add(selectedCharacter);
-		
-		characters.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent arg0) {
-				if (arg0.getStateChange() == ItemEvent.SELECTED) {
-					selectedCharacter.copy((CharacterDetails) characters.getSelectedItem());
-				}
+	public CharacterEditor(Display display, Shell shell) {
+		characterShell = new Shell(shell);
+		characterShell.setLayout(new RowLayout());
+
+		characterList = new Combo(characterShell, SWT.READ_ONLY);
+		characterList.setEnabled(true);
+
+		characters.add(new CharacterDetails(characterShell, 0, "Jeff", "Rey"));
+
+		for (int i = 0; i < characters.size(); i++) {
+			characterList.add(characters.get(i).toString(), i);
+			characterList.setData(characters.get(i).toString(), characters.get(i));
+		}
+
+		characterList.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println(getSelectedDetails().getFirstName());
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// System.out.println(characterList.getText());
 			}
 		});
 
-		pack();
-		setVisible(true);
-		setSize(400, 400);
+		characterList.select(0);
+		characterShell.pack();
+		characterShell.open();
 	}
 
-	private JComboBox<CharacterDetails> createCharacterList() {
-		return new JComboBox<CharacterDetails>(new CharacterDetails[] { new CharacterDetails("Jeff", "Rey"), new CharacterDetails("Jeff", "Rey") });
+	private CharacterDetails getSelectedDetails() {
+		return (CharacterDetails) characterList.getData(characterList.getText());
 	}
 }
