@@ -5,6 +5,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 public class CharacterDetailsUI {
@@ -23,15 +26,45 @@ public class CharacterDetailsUI {
 	private Label birthplaceLabel;
 	private Combo birthplaceCombo;
 
+	private Label relationshipsLabel;
+	private Table relatedCharactersTable;
+
 	public CharacterDetailsUI(Shell shell) {
+		// First Name
 		firstNameLabel = new Label(shell, SWT.LEFT);
 		firstNameLabel.setText("First Name");
 		firstNameTextField = new Text(shell, 0);
 
+		// Second Name
 		secondNameLabel = new Label(shell, SWT.LEFT);
 		secondNameLabel.setText("Second Name");
 		secondNameTextField = new Text(shell, 0);
 
+		// Character Relationships
+		relationshipsLabel = new Label(shell, SWT.LEFT);
+		relationshipsLabel.setText("Relationships");
+
+		relatedCharactersTable = new Table(shell, SWT.CHECK | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		relatedCharactersTable.setHeaderVisible(true);
+		String[] titles = { "Character Name", "Relationship" };
+
+		for (int loopIndex = 0; loopIndex < titles.length; loopIndex++) {
+			TableColumn column = new TableColumn(relatedCharactersTable, SWT.NULL);
+			column.setText(titles[loopIndex]);
+		}
+
+		for (int loopIndex = 0; loopIndex < 5; loopIndex++) {
+			TableItem item = new TableItem(relatedCharactersTable, SWT.NULL);
+			item.setText("Character " + loopIndex);
+			item.setText(0, "Character " + loopIndex);
+			item.setText(1, "Test");
+		}
+
+		for (int loopIndex = 0; loopIndex < titles.length; loopIndex++) {
+			relatedCharactersTable.getColumn(loopIndex).pack();
+		}
+
+		// Place of Birth
 		birthplaceLabel = new Label(shell, SWT.LEFT);
 		birthplaceLabel.setText("Birthplace");
 		birthplaceLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
