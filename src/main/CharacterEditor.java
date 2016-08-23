@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -14,15 +16,21 @@ public class CharacterEditor {
 	private ArrayList<CharacterDetails> characters = new ArrayList<>();
 	Shell characterShell;
 	Combo characterList;
+	CharacterDetailsUI characterDetailsUI;
 
 	public CharacterEditor(Display display, Shell shell) {
 		characterShell = new Shell(shell);
-		characterShell.setLayout(new RowLayout());
+		characterShell.setLayout(new GridLayout(2, true));
+		characterShell.setLayoutData(new RowData(50, 50));
 
 		characterList = new Combo(characterShell, SWT.READ_ONLY);
 		characterList.setEnabled(true);
+		characterList.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
 
-		characters.add(new CharacterDetails(characterShell, 0, "Jeff", "Rey"));
+		characterDetailsUI = new CharacterDetailsUI(characterShell);
+		characterDetailsUI.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+
+		characters.add(new CharacterDetails(0, "Jeff", "Rey"));
 
 		for (int i = 0; i < characters.size(); i++) {
 			characterList.add(characters.get(i).toString(), i);
@@ -31,15 +39,17 @@ public class CharacterEditor {
 
 		characterList.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
-				System.out.println(getSelectedDetails().getFirstName());
+				characterDetailsUI.update(getSelectedDetails());
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// System.out.println(characterList.getText());
+				characterDetailsUI.update(getSelectedDetails());
 			}
 		});
 
 		characterList.select(0);
+		characterDetailsUI.update(getSelectedDetails());
+
 		characterShell.pack();
 		characterShell.open();
 	}

@@ -1,8 +1,5 @@
 package main;
 
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
-
 public class CharacterDetails {
 
 	public static int labelColumn = 0;
@@ -10,26 +7,18 @@ public class CharacterDetails {
 
 	public int ID = 0;
 
-	private Text firstNameTextField;
-	private Text secondNameTextField;
-
-	public CharacterDetails(Shell shell) {
-		// Shell shell = new Shell();
-		firstNameTextField = new Text(shell, 0);
-		secondNameTextField = new Text(shell, 0);
-
-		shell.pack();
-		// shell.open();
+	public int getID() {
+		return ID;
 	}
 
-	public void copy(CharacterDetails cd) {
-		this.setFirstName(cd.getFirstName());
-		this.setSecondName(cd.getSecondName());
+	public void setID(int iD) {
+		ID = iD;
 	}
 
-	public CharacterDetails(Shell shell, int inID, String inFirstName, String inSecondName) {
-		this(shell);
+	private String firstName;
+	private String secondName;
 
+	public CharacterDetails(int inID, String inFirstName, String inSecondName) {
 		ID = inID;
 		setFirstName(inFirstName);
 		setSecondName(inSecondName);
@@ -41,18 +30,18 @@ public class CharacterDetails {
 	}
 
 	public String getFirstName() {
-		return firstNameTextField.getText();
+		return firstName;
 	}
 
-	public void setFirstName(String firstName) {
-		firstNameTextField.setText(firstName);
+	public void setFirstName(String inFirstName) {
+		firstName = inFirstName;
 	}
 
 	public String getSecondName() {
-		return secondNameTextField.getText();
+		return secondName;
 	}
 
-	public void setSecondName(String secondName) {
-		secondNameTextField.setText(secondName);
+	public void setSecondName(String inSecondName) {
+		secondName = inSecondName;
 	}
 }
