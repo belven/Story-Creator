@@ -1,11 +1,16 @@
 package main;
 
 public class CharacterDetails {
-
-	public static int labelColumn = 0;
-	public static int valueColumn = 1;
-
-	public int ID = 0;
+	private int ID = 0;
+	
+	private String firstName = "Test";
+	private String secondName = "Name";
+	
+	private Arrary<CharacterRelationship> characterRelationships = new Array<>();
+	
+	private int placeOfBirth = 0;
+	private int race = 0;
+	private int faction = 0;
 
 	public int getID() {
 		return ID;
@@ -14,14 +19,18 @@ public class CharacterDetails {
 	public void setID(int iD) {
 		ID = iD;
 	}
-
-	private String firstName;
-	private String secondName;
-
+	
 	public CharacterDetails(int inID, String inFirstName, String inSecondName) {
 		ID = inID;
 		setFirstName(inFirstName);
 		setSecondName(inSecondName);
+	}
+	
+	public CharacterDetails(int inID, String inFirstName, String inSecondName, Arrary<CharacterRelationhip> inRelationships, int inRace, int inFaction) {
+		this(inID, inFirstName, inSecondName);
+		characterRelationships = inRelationships;
+		race = inRace;
+		faction = inFaction;
 	}
 
 	@Override
