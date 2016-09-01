@@ -3,9 +3,11 @@ package main;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -16,13 +18,7 @@ import org.eclipse.swt.widgets.Text;
 
 import main.CharacterRelationship.RelationshipTypes;
 
-public class CharacterDetailsUI {
-	final public static int labelColumn = 0;
-	final public static int valueColumn = 1;
-
-	Shell owningShell;
-
-	public CharacterDetails selectedDetails;
+public class CharacterDetailsUI extends BaseUIComponent {
 
 	private Text firstNameTextField;
 	private Label firstNameLabel;
@@ -68,35 +64,7 @@ public class CharacterDetailsUI {
 
 	public CharacterDetailsUI(Shell shell, CharacterDetails inSelectedDetails) {
 		this(shell);
-		selectedDetails = inSelectedDetails;
-		update(selectedDetails);
-	}
-
-	void update(CharacterDetails selectedDetails) {
-		this.selectedDetails = selectedDetails;
-
-		setFirstName(selectedDetails.getFirstName());
-		setSecondName(selectedDetails.getSecondName());
-
-		birthplaceCombo.select(selectedDetails.getPlaceOfBirth());
-		raceCombo.select(selectedDetails.getRace());
-		factionCombo.select(selectedDetails.getFaction());
-
-		relatedCharactersTable.removeAll();
-		relatedCharactersTable.clearAll();
-
-		for (CharacterRelationship cr : selectedDetails.getCharacterRelationships()) {
-			TableItem item = new TableItem(relatedCharactersTable, SWT.NULL);
-			item.setText(0, getCharacterName(cr));
-			item.setText(1, getRelationshipType(cr).name());
-		}
-
-		for (int i = 0; i < relatedCharactersTable.getColumns().length; i++) {
-			relatedCharactersTable.getColumns()[i].pack();
-		}
-
-		relatedCharactersTable.redraw();
-		relatedCharactersTable.update();
+		update();
 	}
 
 	private void createFactionCombo() {
@@ -107,13 +75,13 @@ public class CharacterDetailsUI {
 		factionCombo = new Combo(owningShell, SWT.READ_ONLY);
 		factionCombo.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
 
-		for (Faction f : CharacterEditor.getFactions()) {
+		for (Faction f : CharacterEditorUI.getFactions()) {
 			factionCombo.add(f.getFactionName());
 		}
 
 		factionCombo.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
-				selectedDetails.setFaction(factionCombo.getSelectionIndex());
+				getSelectedDetails().setFaction(factionCombo.getSelectionIndex());
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -130,13 +98,13 @@ public class CharacterDetailsUI {
 		raceCombo = new Combo(owningShell, SWT.READ_ONLY);
 		raceCombo.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
 
-		for (Race r : CharacterEditor.getRaces()) {
+		for (Race r : CharacterEditorUI.getRaces()) {
 			raceCombo.add(r.getRaceName());
 		}
 
 		raceCombo.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
-				selectedDetails.setRace(raceCombo.getSelectionIndex());
+				getSelectedDetails().setRace(raceCombo.getSelectionIndex());
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -148,18 +116,26 @@ public class CharacterDetailsUI {
 	private void createBirthplaceCombo() {
 		birthplaceLabel = new Label(owningShell, SWT.LEFT);
 		birthplaceLabel.setText("Birthplace");
-		birthplaceLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
+
+		Button openLocations = new Button(owningShell, SWT.PUSH);
+		openLocations.setText("Open Locations");
+		openLocations.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				new LocationUI(owningShell);
+			}
+		});
 
 		birthplaceCombo = new Combo(owningShell, SWT.READ_ONLY);
 		birthplaceCombo.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
 
-		for (Location l : CharacterEditor.getLocations()) {
+		for (Location l : CharacterEditorUI.getLocations()) {
 			birthplaceCombo.add(l.getName());
 		}
 
 		birthplaceCombo.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
-				selectedDetails.setPlaceOfBirth(birthplaceCombo.getSelectionIndex());
+				getSelectedDetails().setPlaceOfBirth(birthplaceCombo.getSelectionIndex());
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -197,7 +173,7 @@ public class CharacterDetailsUI {
 		secondNameTextField.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
-				selectedDetails.setSecondName(secondNameTextField.getText());
+				getSelectedDetails().setSecondName(secondNameTextField.getText());
 			}
 
 			@Override
@@ -215,7 +191,7 @@ public class CharacterDetailsUI {
 		firstNameTextField.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
-				selectedDetails.setFirstName(firstNameTextField.getText());
+				getSelectedDetails().setFirstName(firstNameTextField.getText());
 			}
 
 			@Override
@@ -226,7 +202,7 @@ public class CharacterDetailsUI {
 	}
 
 	private String getCharacterName(CharacterRelationship cr) {
-		return CharacterEditor.getCharacterAt(cr.getCharacterB()).toString();
+		return CharacterEditorUI.getCharacterAt(cr.getCharacterB()).toString();
 	}
 
 	private RelationshipTypes getRelationshipType(CharacterRelationship cr) {
@@ -255,6 +231,51 @@ public class CharacterDetailsUI {
 	}
 
 	public void setLayoutData(GridData gridData) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void update() {
+		setFirstName(getSelectedDetails().getFirstName());
+		setSecondName(getSelectedDetails().getSecondName());
+
+		birthplaceCombo.select(getSelectedDetails().getPlaceOfBirth());
+		raceCombo.select(getSelectedDetails().getRace());
+		factionCombo.select(getSelectedDetails().getFaction());
+
+		relatedCharactersTable.removeAll();
+		relatedCharactersTable.clearAll();
+
+		for (CharacterRelationship cr : getSelectedDetails().getCharacterRelationships()) {
+			TableItem item = new TableItem(relatedCharactersTable, SWT.NULL);
+			item.setText(0, getCharacterName(cr));
+			item.setText(1, getRelationshipType(cr).name());
+		}
+
+		for (int i = 0; i < relatedCharactersTable.getColumns().length; i++) {
+			relatedCharactersTable.getColumns()[i].pack();
+		}
+
+		relatedCharactersTable.redraw();
+		relatedCharactersTable.update();
+
+	}
+
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void save() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void reset() {
 		// TODO Auto-generated method stub
 
 	}

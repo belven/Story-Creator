@@ -9,10 +9,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-public class CharacterEditor {
+public class CharacterEditorUI {
 	private static ArrayList<CharacterDetails> characters = new ArrayList<>();
 	private static ArrayList<CharacterRelationship> characterRelationships = new ArrayList<>();
 	private static ArrayList<Location> locations = new ArrayList<>();
@@ -20,10 +19,10 @@ public class CharacterEditor {
 	private static ArrayList<Race> races = new ArrayList<>();
 
 	Shell characterShell;
-	Combo characterList;
-	CharacterDetailsUI characterDetailsUI;
+	public static Combo characterList;
+	public static CharacterDetailsUI characterDetailsUI;
 
-	public CharacterEditor(Display display, Shell shell) {
+	public CharacterEditorUI(Shell shell) {
 		getDetailsFromDatabase();
 
 		createShell(shell);
@@ -44,7 +43,7 @@ public class CharacterEditor {
 	}
 
 	public static void setRaces(ArrayList<Race> races) {
-		CharacterEditor.races = races;
+		CharacterEditorUI.races = races;
 	}
 
 	private void getDetailsFromDatabase() {
@@ -89,16 +88,16 @@ public class CharacterEditor {
 
 		characterList.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
-				characterDetailsUI.update(getSelectedDetails());
+				characterDetailsUI.update();
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
-				characterDetailsUI.update(getSelectedDetails());
+				characterDetailsUI.update();
 			}
 		});
 
 		characterList.select(0);
-		characterDetailsUI.update(getSelectedDetails());
+		characterDetailsUI.update();
 	}
 
 	private void createCharacterList() {
@@ -114,7 +113,7 @@ public class CharacterEditor {
 		characterShell.setText("Character Details");
 	}
 
-	private CharacterDetails getSelectedDetails() {
+	public static CharacterDetails getSelectedDetails() {
 		return (CharacterDetails) characterList.getData(characterList.getText());
 	}
 
@@ -139,6 +138,6 @@ public class CharacterEditor {
 	}
 
 	public static void setFactions(ArrayList<Faction> factions) {
-		CharacterEditor.factions = factions;
+		CharacterEditorUI.factions = factions;
 	}
 }

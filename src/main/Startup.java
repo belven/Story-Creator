@@ -23,7 +23,7 @@ public class Startup implements Runnable {
 		openCharacters.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				new CharacterEditor(display, shell);
+				new CharacterEditorUI(shell);
 			}
 		});
 
