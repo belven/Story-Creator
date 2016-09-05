@@ -1,6 +1,10 @@
 package main;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -11,18 +15,24 @@ import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Shell;
 
-public class CharacterEditorUI {
-	private static ArrayList<CharacterDetails> characters = new ArrayList<>();
+public class CharacterEditorUI extends BaseUIComponent {
+	private static ArrayList<Character> characters = new ArrayList<>();
 	private static ArrayList<CharacterRelationship> characterRelationships = new ArrayList<>();
 	private static ArrayList<Location> locations = new ArrayList<>();
 	private static ArrayList<Faction> factions = new ArrayList<>();
 	private static ArrayList<Race> races = new ArrayList<>();
+	private static Connection con = null;
 
 	Shell characterShell;
+	private String serverName;
+	private String dbms;
+	private String dbName;
+	private String portNumber;
 	public static Combo characterList;
 	public static CharacterDetailsUI characterDetailsUI;
 
 	public CharacterEditorUI(Shell shell) {
+		setupConnection();
 		getDetailsFromDatabase();
 
 		createShell(shell);
@@ -34,7 +44,31 @@ public class CharacterEditorUI {
 		characterShell.open();
 	}
 
-	public static CharacterDetails getCharacterAt(int index) {
+	private void setupConnection() {
+		Properties connectionProps = new Properties();
+		// connectionProps.put("user", this.userName);
+		// connectionProps.put("password", this.password);
+		try {
+
+			if (dbms.equals("mysql")) {
+				con = DriverManager.getConnection(
+						"jdbc:" + this.dbms + "://" + this.serverName + ":" + this.portNumber + "/", connectionProps);
+
+			} else if (this.dbms.equals("derby")) {
+				con = DriverManager.getConnection("jdbc:" + this.dbms + ":" + this.dbName + ";create=true",
+						connectionProps);
+			}
+
+			System.out.println("Connected to database");
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public static Character getCharacterAt(int index) {
 		return characters.get(index);
 	}
 
@@ -61,14 +95,14 @@ public class CharacterEditorUI {
 
 		characterRelationships.add(new CharacterRelationship(0, 1, 2, 0));
 
-		characters.add(new CharacterDetails(0, "Jeff", "Rey", 0, 1, 2));
-		characters.add(new CharacterDetails(0, "James", "Rey", 2, 1, 0));
+		characters.add(new Character(0, "Jeff", "Rey", 0, 1, 2));
+		characters.add(new Character(0, "James", "Rey", 2, 1, 0));
 
 		setUpRelationships();
 	}
 
 	private void setUpRelationships() {
-		for (CharacterDetails cd : characters) {
+		for (Character cd : characters) {
 			for (CharacterRelationship cr : characterRelationships) {
 				if (cr.getCharacterA() == cd.getID()) {
 					cd.getCharacterRelationships().add(cr);
@@ -113,8 +147,8 @@ public class CharacterEditorUI {
 		characterShell.setText("Character Details");
 	}
 
-	public static CharacterDetails getSelectedDetails() {
-		return (CharacterDetails) characterList.getData(characterList.getText());
+	public static Character getSelectedDetails() {
+		return (Character) characterList.getData(characterList.getText());
 	}
 
 	public static ArrayList<CharacterRelationship> getCharacterRelationships() {
@@ -139,5 +173,37 @@ public class CharacterEditorUI {
 
 	public static void setFactions(ArrayList<Faction> factions) {
 		CharacterEditorUI.factions = factions;
+	}
+
+	public static Connection getConnection() {
+		return con;
+	}
+
+	public static void setConnection(Connection con) {
+		CharacterEditorUI.con = con;
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void save() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+
 	}
 }

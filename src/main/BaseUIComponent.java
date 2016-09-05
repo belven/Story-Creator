@@ -13,7 +13,7 @@ public abstract class BaseUIComponent {
 
 	public abstract void reset();
 
-	public static CharacterDetails getSelectedDetails() {
+	public static Character getSelectedDetails() {
 		return CharacterEditorUI.getSelectedDetails();
 	}
 

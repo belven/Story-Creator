@@ -62,7 +62,7 @@ public class CharacterDetailsUI extends BaseUIComponent {
 		owningShell.pack();
 	}
 
-	public CharacterDetailsUI(Shell shell, CharacterDetails inSelectedDetails) {
+	public CharacterDetailsUI(Shell shell, Character inSelectedDetails) {
 		this(shell);
 		update();
 	}
